@@ -138,6 +138,8 @@ DATABASES = {
     'default': env.db()
 }
 
+AUTH_USER_MODEL = 'users.User'
+
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend'
@@ -150,6 +152,7 @@ STATICFILES_DIRS = [
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 LOCAL_APPS = [
     'home',
+    'users',
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',
@@ -167,14 +170,19 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = None
+ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_UNIQUE_EMAIL = True
 LOGIN_REDIRECT_URL = '/'
+ACCOUNT_FORMS = {
+    'signup': 'users.forms.SignupForm',
+}
 
-if DEBUG:
-    # output email to console instead of sending
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
+DEFAULT_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', None)
+DEFAULT_FROM_EMAIL = f'Ajaib <{DEFAULT_EMAIL}>'
 EMAIL_HOST = "smtp.sendgrid.net"
-EMAIL_HOST_USER = env.str("SENDGRID_USERNAME", "")
-EMAIL_HOST_PASSWORD = env.str("SENDGRID_PASSWORD", "")
+EMAIL_HOST_USER = os.environ.get('DEFAULT_FROM_EMAIL', None)
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', None)
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
