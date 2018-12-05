@@ -124,6 +124,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_URL = '/media/'
+
 import environ
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 env = environ.Env()
@@ -153,6 +155,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 LOCAL_APPS = [
     'home',
     'users',
+    'tasks',
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',
