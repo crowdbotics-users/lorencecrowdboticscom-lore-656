@@ -180,9 +180,9 @@ ACCOUNT_FORMS = {
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 DEFAULT_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', None)
-DEFAULT_FROM_EMAIL = f'Ajaib <{DEFAULT_EMAIL}>'
-EMAIL_HOST = "smtp.sendgrid.net"
-EMAIL_HOST_USER = os.environ.get('DEFAULT_FROM_EMAIL', None)
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', None)
+DEFAULT_FROM_EMAIL = f'Tasker <{DEFAULT_EMAIL}>'
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = env.str('SENDGRID_USERNAME', '')
+EMAIL_HOST_PASSWORD = env.str('SENDGRID_PASSWORD', '')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
