@@ -59,7 +59,7 @@ ROOT_URLCONF = 'tasker.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -155,7 +155,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 LOCAL_APPS = [
     'home',
     'users',
-    'tasks',
+    'apps.tasks',
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',

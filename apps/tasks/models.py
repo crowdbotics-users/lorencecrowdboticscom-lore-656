@@ -49,7 +49,8 @@ class Task(TimeStampedModel):
         related_name='customer_tasks',
         on_delete=models.CASCADE
     )
-    status = models.IntegerField(_('Status'), choices=STATUS_CHOICES, default=STATUS_PENDING)
+    status = models.IntegerField(
+        _('Status'), choices=STATUS_CHOICES, default=STATUS_PENDING)
     start_date = models.DateTimeField(_('Start Date'))
     address = models.CharField(_('Address'), max_length=255)
     notes = models.TextField(_('Notes'), **OPTIONAL)
