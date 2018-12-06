@@ -5,6 +5,7 @@ from .models import (
     Task,
     Todo,
     TodoImage,
+    Application,
 )
 
 
@@ -32,3 +33,8 @@ class TodoAdmin(admin.ModelAdmin):
 @admin.register(TodoImage)
 class TodoImageAdmin(admin.ModelAdmin):
     list_display = ('image',)
+
+
+@admin.register(Application)
+class ApplicationAdmin(admin.ModelAdmin):
+    list_display = ('task', 'tasker',)

@@ -47,12 +47,17 @@ class Task(TimeStampedModel):
         'users.User',
         verbose_name=_('Tasker'),
         related_name='customer_tasks',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        **OPTIONAL
     )
     status = models.IntegerField(
-        _('Status'), choices=STATUS_CHOICES, default=STATUS_PENDING)
-    start_date = models.DateTimeField(_('Start Date'))
+        _('Status'),
+        choices=STATUS_CHOICES,
+        default=STATUS_PENDING
+    )
+    cost = models.DecimalField(_('Cost'), max_digits=15, decimal_places=2)
     address = models.CharField(_('Address'), max_length=255)
+    start_date = models.DateTimeField(_('Start Date'))
     notes = models.TextField(_('Notes'), **OPTIONAL)
 
     class Meta:
@@ -95,3 +100,25 @@ class TodoImage(models.Model):
 
     def __str__(self):
         return self.image.url
+
+
+class Application(TimeStampedModel):
+    task = models.ForeignKey(
+        'tasks.Task',
+        verbose_name=_('Task'),
+        related_name='applications',
+        on_delete=models.CASCADE
+    )
+    tasker = models.ForeignKey(
+        'users.User',
+        verbose_name=_('Tasker'),
+        related_name='applications',
+        on_delete=models.CASCADE
+    )
+
+    class Meta:
+        verbose_name = _('Application')
+        verbose_name_plural = _('Applications')
+
+    def __str__(self):
+        return self.tasker.get_full_name()
