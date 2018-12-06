@@ -5,13 +5,13 @@ from . import views
 
 urlpatterns = [
     url(
-        regex=r'^tasker-dashboard/$',
-        view=views.TaskerDashboardView.as_view(),
-        name="tasker-dashboard"
+        regex=r'^$',
+        view=views.TaskListView.as_view(),
+        name='task-list'
     ),
     url(
-        regex=r'^customer-dashboard/$',
-        view=views.CustomerDashboardView.as_view(),
-        name="customer-dashboard"
+        regex=r'^create/$',
+        view=views.TaskCreateView.as_view(),
+        name='task-create'
     ),
 ]

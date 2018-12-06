@@ -1,29 +1,34 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.urlresolvers import reverse_lazy
 from django.views.generic.base import TemplateView
+from django.views.generic import (
+    CreateView,
+    ListView,
+)
 
 from .models import Task
-from .forms import CustomerTaskCreationForm, CustomerTodoCreationForm
+from .forms import TaskForm
 
 
-class TaskerDashboardView(TemplateView):
+class TaskListView(LoginRequiredMixin, ListView):
+    model = Task
+    context_object_name = 'tasks'
+    template_name = 'tasks/task_list.html'
 
-    template_name = "tasks/tasker_dashboard.html"
+    def get_queryset(self):
+        user = self.request.user
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['available_tasks'] = Task.objects.filter(tasker=None,
-                                                         status=Task.STATUS_PENDING)
-        context['my_tasks'] = Task.objects.filter(tasker=self.request.user)
-        return context
+        if user.type == user.TYPE_TASKER:
+            return user.customer_tasks.all()
+
+        return user.tasks.all()
 
 
-class CustomerDashboardView(TemplateView):
+class TaskCreateView(LoginRequiredMixin, CreateView):
+    model = Task
+    form_class = TaskForm
+    template_name = 'tasks/task_manage.html'
+    success_url = reverse_lazy('tasks:customer-task-list')
 
-    template_name = "tasks/customer_dashboard.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['my_tasks'] = Task.objects.filter(customer=self.request.user)
-        context['task_form'] = CustomerTaskCreationForm()
-        context['todo_form'] = CustomerTodoCreationForm()
-
-        return context
+    def get_initial(self):
+        return {'customer': self.request.user}

@@ -65,7 +65,7 @@ class Task(TimeStampedModel):
         verbose_name_plural = _('Tasks')
 
     def __str__(self):
-        return self.name
+        return str(self.id)
 
 
 class Todo(TimeStampedModel):
@@ -82,7 +82,7 @@ class Todo(TimeStampedModel):
         verbose_name_plural = _('Todos')
 
     def __str__(self):
-        return self.name
+        return str(self.task.id)
 
 
 class TodoImage(models.Model):
