@@ -39,16 +39,16 @@ class TaskForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.task_formset = TodoFormSet()
+        self.todo_formset = TodoFormSet()
         self.initial = kwargs.get('initial')
 
     def clean(self):
         super().clean()
-        self.task_formset = TodoFormSet(self.data, self.files)
+        self.todo_formset = TodoFormSet(self.data, self.files)
 
-        if not self.task_formset.is_valid():
-            if self.task_formset.non_form_errors():
-                raise forms.ValidationError(self.task_formset.non_form_errors()[0])
+        if not self.todo_formset.is_valid():
+            if self.todo_formset.non_form_errors():
+                raise forms.ValidationError(self.todo_formset.non_form_errors()[0])
             raise forms.ValidationError(_('Please check your todo task list errors below.'))
 
         return self.cleaned_data
@@ -67,7 +67,7 @@ class TaskForm(forms.ModelForm):
         task.save()
 
         # save formset
-        for form in self.task_formset.forms:
+        for form in self.todo_formset.forms:
             if form.is_valid() and form.cleaned_data:
                 form.initial['task'] = task
                 form.save()
@@ -100,4 +100,4 @@ class TodoForm(forms.ModelForm):
         return todo
 
 
-TodoFormSet = formset_factory(TodoForm, extra=2)
+TodoFormSet = formset_factory(TodoForm, extra=1)

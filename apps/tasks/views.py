@@ -28,7 +28,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
     form_class = TaskForm
     template_name = 'tasks/task_manage.html'
-    success_url = reverse_lazy('tasks:customer-task-list')
+    success_url = reverse_lazy('tasks:task-list')
 
     def get_initial(self):
         return {'customer': self.request.user}

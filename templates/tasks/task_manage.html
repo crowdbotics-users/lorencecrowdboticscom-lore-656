@@ -1,24 +1,54 @@
 {% extends 'base.html' %}
 
-{% load bootstrap4 %}
+{% load bootstrap4 staticfiles %}
 
 {% block content %}
-  <div class="col-md-6 offset-md-3 mt-3">
-      {% for task in my_tasks %}
-          task -- {{ task }}
-      {% endfor %}
-      <form method="post" enctype="multipart/form-data">
-          {% csrf_token %}
-          {% bootstrap_field form.category %}
-          {% bootstrap_field form.address %}
-          {% bootstrap_field form.date %}
-          {% bootstrap_field form.time %}
-          {% bootstrap_field form.cost %}
-          <h1>TASKS</h1>
-          {% bootstrap_formset form.task_formset layout='horizontal' %}
+<div class="col-md-8 offset-md-2 mt-3">
+    <h3 class="mt-5 mb-4">Create Task</h3>
 
-          {% bootstrap_field form.notes %}
-          <input type="submit" value="Submit">
-      </form>
-  </div>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% bootstrap_form_errors form %}
+
+        {% bootstrap_field form.category %}
+        {% bootstrap_field form.address %}
+        {% bootstrap_field form.date %}
+        {% bootstrap_field form.time %}
+        {% bootstrap_field form.cost %}
+
+        <div class="todo-formset mb-4">
+            <h4 class="mt-5 mb-3">
+                Todo List
+                <button class="btn btn-secondary btn-sm btn-add-todo float-right"><i class="fas fa-plus"></i> Add</button>
+            </h4>
+
+            {{ form.todo_formset.management_form }}
+            {% bootstrap_formset_errors form.todo_formset %}
+
+            <div class="forms">
+                {% for form in form.todo_formset %}
+                {% bootstrap_form_errors form %}
+                <div class="row">
+                    <div class="col-md-8">
+                        {% bootstrap_field form.description show_label=False %}
+                    </div>
+                    <div class="col-md-4">
+                        {% bootstrap_field form.images show_label=False %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% bootstrap_field form.notes %}
+
+        <div class="text-center">
+            <button class="btn btn-lg btn-success mt-3 mb-5" type="submit">Submit</button>
+        </div>
+    </form>
+</div>
 {% endblock content %}
+
+{% block footer_js %}
+<script src="{% static 'js/task_manage.js' %}"></script>
+{% endblock footer_js %}
