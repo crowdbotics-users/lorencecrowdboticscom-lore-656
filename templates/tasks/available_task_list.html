@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="card-columns">
+        {% for task in tasks %}
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ task.category }}</h5>
+                    <p class="card-text">{{ task.notes }}</p>
+                    <a href="{% url 'tasks:task-detail' task.id %}" class="card-link">Apply Now</a>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">{{ task.start_date }}</small>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}

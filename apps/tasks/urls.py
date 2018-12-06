@@ -14,4 +14,14 @@ urlpatterns = [
         view=views.TaskCreateView.as_view(),
         name='task-create'
     ),
+    url(
+        regex=r'^available/$',
+        view=views.AvailableTaskListView.as_view(),
+        name='available-task-list'
+    ),
+    url(
+        regex=r'^(?P<pk>[-:\w]+)/$',
+        view=views.TaskDetailView.as_view(),
+        name='task-detail'
+    ),
 ]

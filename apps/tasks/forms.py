@@ -90,12 +90,15 @@ class TodoForm(forms.ModelForm):
         todo.task = self.initial.get('task')
         todo.save()
 
-        images = self.files.getlist(f'{self.prefix}-images')
-        for image in images:
-            TodoImage.objects.create(
-                todo=todo,
-                image=image
-            )
+        try:
+            images = self.files.getlist(f'{self.prefix}-images')
+            for image in images:
+                TodoImage.objects.create(
+                    todo=todo,
+                    image=image
+                )
+        except AttributeError:
+            pass
 
         return todo
 

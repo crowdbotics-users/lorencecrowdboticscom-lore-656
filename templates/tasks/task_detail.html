@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                {{ task.category }}
+                {{ task.customer }}
+                {{ task.cost }}
+                {{ task.address }}
+                {{ task.start_date }}
+                {{ task.notes }}
+            </div>
+            <div class="col-sm">
+                <h1> TO DO LIST: </h1>
+                <ul class="list-group list-group-flush">
+                {% for todo in task.todos.all %}
+                    <li class="list-group-item"><i class="fas fa-check-square"></i>&nbsp;{{ todo.description }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
