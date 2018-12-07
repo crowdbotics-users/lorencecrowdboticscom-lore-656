@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 
-{% load humanize staticfiles %}
+{% load humanize staticfiles task_tags %}
+
+{% block header_css %}
+<link rel="stylesheet" href="{% static 'css/rating.css' %}">
+{% endblock header_css %}
 
 {% block content %}
 <div class="col-md-12 mt-5">
@@ -29,8 +33,36 @@
                         <div class="buttons row col-md-12">
                             {% if user.type == user.TYPE_TASKER and task.status != task.STATUS_DONE %}
                                 <a href="{% url 'tasks:task-detail' task.id %}" class="btn btn-primary mr-2">Status Update</a>
+                            {% else %}
+                                {% if not user|has_rated:task %}
+                                    <button class="btn btn-warning mr-2" data-toggle="modal" data-target="#rate-{{ task.id }}">Rate</button>
+                                {% endif %}
                             {% endif %}
                             <a href="{% url 'tasks:task-detail' task.id %}" class="btn btn-outline-primary">Details</a>
+                        </div>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="rate-{{ task.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <input class="rating">
+
+                                                <div class="form-group">
+                                                    <label for="message-text" class="col-form-label">Remarks:</label>
+                                                    <textarea class="form-control" id="message-text"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="text-center mt-4">
+                                                <button type="button" class="btn btn-lg btn-primary text-white" data-dismiss="modal">Rate</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-7">
@@ -64,3 +96,13 @@
     {% endfor %}
 </div>
 {% endblock content %}
+
+
+{% block footer_js %}
+<script src="{% static 'js/rating.js' %}"></script>
+<script>
+    $(document).ready(function(){
+        $('.rating').rating();
+    });
+</script>
+{% endblock footer_js %}

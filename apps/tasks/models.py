@@ -67,6 +67,9 @@ class Task(TimeStampedModel):
     def __str__(self):
         return str(self.id)
 
+    def has_rated_by(self, user):
+        return self.ratings.filter(task=self, sender=user).exists()
+
 
 class Todo(TimeStampedModel):
     task = models.ForeignKey(
