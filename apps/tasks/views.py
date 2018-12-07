@@ -13,6 +13,7 @@ from django.views.generic import (
 
 from .models import (
     Application,
+    Category,
     Task,
 )
 from .forms import (
@@ -58,14 +59,21 @@ class AvailableTaskListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = self.request.user
+        category = self.request.GET.get('category', None)
 
         if user.type == user.TYPE_TASKER:
             applied_tasks = [application.task.id for application in user.applications.all()]
-            return Task.objects\
-                .filter(status=Task.STATUS_PENDING)\
-                .exclude(id__in=applied_tasks)
+            queryset = Task.objects.filter(status=Task.STATUS_PENDING)
+            if category:
+                queryset = queryset.filter(category__pk=category)
+            return queryset.exclude(id__in=applied_tasks)
 
         return HttpResponseNotFound('<h1>Page not found</h1>')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        return context
 
 
 class TaskCreateView(LoginRequiredMixin, CreateView):

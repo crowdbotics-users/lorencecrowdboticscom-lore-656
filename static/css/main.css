@@ -38,3 +38,6 @@ body {
     color: #343a40;
     text-decoration: none;
 }
+.dropdown-toggle{
+    height: 40px;
+}

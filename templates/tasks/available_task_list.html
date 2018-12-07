@@ -1,9 +1,21 @@
 {% extends 'base.html' %}
 
-{% load humanize %}
+{% load humanize staticfiles %}
+
+{% block header_css %}
+<link href="{% static 'css/bootstrap-select.min.css' %}" rel="stylesheet">
+{% endblock header_css %}
 
 {% block content %}
 <div class="col-md-12 mt-5">
+    <div class="text-center mb-5">
+        <select class="search-category" data-live-search="true" title="Filter by Category">
+            {% for category in categories %}
+                <option value="{{ category.id }}" {% if request.GET.category|add:"0" == category.id %}selected{% endif %}>{{ category.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
     {% for task in tasks %}
         <div class="card border-dark mb-5">
             <div class="card-body">
@@ -48,3 +60,8 @@
     {% endfor %}
 </div>
 {% endblock content %}
+
+{% block footer_js %}
+<script src="{% static 'js/bootstrap-select.min.js' %}"></script>
+<script src="{% static 'js/search_category.js' %}"></script>
+{% endblock footer_js %}
