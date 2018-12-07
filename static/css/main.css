@@ -27,3 +27,6 @@ body {
     font-size: 1.2em;
     color: #ffb905;
 }
+.thumbnail {
+    width: 20px;
+}

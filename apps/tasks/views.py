@@ -20,10 +20,11 @@ class TaskListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = self.request.user
 
+        queryset = user.tasks.all()
         if user.type == user.TYPE_TASKER:
-            return user.customer_tasks.all()
+            queryset = user.customer_tasks.all()
 
-        return user.tasks.all()
+        return queryset.order_by('status')
 
 
 class TaskDetailView(LoginRequiredMixin, DetailView):

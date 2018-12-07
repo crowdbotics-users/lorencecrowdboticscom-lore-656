@@ -1,11 +1,66 @@
 {% extends 'base.html' %}
 
+{% load humanize staticfiles %}
+
 {% block content %}
-    <div class="card" style="width: 18rem;">
-        <ul class="list-group list-group-flush">
-            {% for task in tasks %}
-            <li class="list-group-item">{{ task.category }}</li>
-            {% endfor %}
-        </ul>
-    </div>
+<div class="col-md-12 mt-5">
+    {% for task in tasks %}
+        <div class="card border-dark mb-5">
+            <h6 class="card-header
+                {% if task.status == task.STATUS_PENDING %}
+                    bg-light
+                {% elif task.status == task.STATUS_ACCEPTED %}
+                    bg-warning text-white
+                {% elif task.status == task.STATUS_IN_PROGRESS %}
+                    bg-primary text-white
+                {% elif task.status == task.STATUS_DONE %}
+                    bg-success text-white
+                {% endif %}"
+            >
+                {{ task.get_status_display|upper }}
+            </h6>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-5">
+                        <h4 class="card-title">{{ task.category }}</h4>
+                        <h6 class="card-subtitle text-muted mb-2">${{ task.cost }}</h6>
+                        <h6>{{ task.address }}</h6>
+                        <p class="card-text">{{ task.notes }}</p>
+                        <div class="buttons row col-md-12">
+                            {% if user.type == user.TYPE_TASKER and task.status != task.STATUS_DONE %}
+                                <a href="{% url 'tasks:task-detail' task.id %}" class="btn btn-primary mr-2">Status Update</a>
+                            {% endif %}
+                            <a href="{% url 'tasks:task-detail' task.id %}" class="btn btn-outline-primary">Details</a>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card">
+                            <ul class="list-group list-group-flush">
+                                {% for item in task.todos.all %}
+                                    <li class="list-group-item">
+                                        <ul><li>{{ item.description }}</li></ul>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-dark">
+                <small class="text-white">Requested for <strong>{{ task.start_date.date }} @ {{ task.start_date.time }}</strong></small>
+                <small class="text-white float-right">
+                    {% if user.type == user.TYPE_TASKER %}
+                        Requested by
+                        <a href="{% url 'users:profile' task.customer.pk %}" class="text-white"><strong>{{ task.customer.get_full_name }}</strong></a>
+                    {% else %}
+                        {% if task.tasker %}
+                            Tasked by
+                            <a href="{% url 'users:profile' task.tasker.pk %}" class="text-white"><strong>{{ task.tasker.get_full_name }}</strong></a>
+                        {% endif %}
+                    {% endif %}
+                </small>
+            </div>
+        </div>
+    {% endfor %}
+</div>
 {% endblock content %}
