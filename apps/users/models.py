@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import Avg
 from django.utils.translation import ugettext_lazy as _
 
 from core.models import TimeStampedModel, OPTIONAL
@@ -25,6 +26,13 @@ class User(AbstractUser):
     def __str__(self):
         return self.get_full_name()
 
+    @property
+    def average_rating(self):
+        return round(
+            self.received_ratings.all()\
+                .aggregate(average=Avg('rate'))\
+                .get('average', 0)
+        )
 
 class Rating(TimeStampedModel):
     task = models.ForeignKey(
@@ -53,4 +61,4 @@ class Rating(TimeStampedModel):
         verbose_name_plural = _('Ratings')
 
     def __str__(self):
-        return self.rate()
+        return str(self.rate)

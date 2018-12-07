@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block content %}
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card border-info">
+            <img class="card-img-top" src="{% if user.image %}{{ user.image.url }}{% else %}{% static 'img/user.png' %}{% endif %}" alt="Profile Picture">
+            <div class="card-body">
+                <div class="star-rating mt-1 mb-1">
+                    {% for i in "12345"|center:"5" %}
+                        {% if i|add:"0" <= user.average_rating %}
+                            <i class="fas fa-star star"></i>
+                        {% else %}
+                            <i class="far fa-star star"></i>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <h2 class="card-title">{{ user.get_full_name }}</h2>
+                <h5>{{ user.email }}</h5>
+                <h5>{{ user.contact }}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7 offset-md-1">
+        {% for rating in user.received_ratings.all %}
+            <div class="card border-info mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <img src="{% if user.image %}{{ rating.sender.image.url }}{% else %}{% static 'img/user.png' %}{% endif %}" alt="Picture" class="rounded-circle card-img-top">
+                            <div class="text-center mt-1">
+                                <h5 class="card-title">{{ rating.sender.get_full_name }}</h5>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="star-rating mb-2">
+                                {% for i in "12345"|center:"5" %}
+                                    {% if i|add:"0" <= rating.rate %}
+                                        <i class="fas fa-star star"></i>
+                                    {% else %}
+                                        <i class="far fa-star star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <p class="card-text">{{ rating.remarks }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

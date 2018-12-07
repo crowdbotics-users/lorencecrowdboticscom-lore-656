@@ -30,7 +30,7 @@
                     </span>
                 {% else %}
                     <span class="navbar-text">
-                        <a href="" class="nav-link"><i class="fas fa-user"></i> Profile</a>
+                        <a href="{% url 'users:profile' user.id %}" class="nav-link"><i class="fas fa-user"></i> Profile</a>
                     </span>
                     <span class="navbar-text">
                         <a href="{% url 'account_logout' %}" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
