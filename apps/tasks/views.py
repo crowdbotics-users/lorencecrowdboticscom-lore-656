@@ -16,6 +16,7 @@ from .models import (
     Task,
 )
 from .forms import (
+    AcceptTaskerForm,
     ApplicationForm,
     TaskForm,
     TaskStatusUpdateForm,
@@ -113,3 +114,16 @@ class TaskStatusUpdateView(LoginRequiredMixin, UpdateView):
 
     def get(self, request, *args, **kwargs):
         return HttpResponseRedirect(reverse_lazy('tasks:task-list'))
+
+
+class AcceptTaskerView(LoginRequiredMixin, UpdateView):
+    model = Task
+    context_object_name = 'task'
+    form_class = AcceptTaskerForm
+    success_url = reverse_lazy('tasks:task-list')
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse_lazy('tasks:task-detail', args=(self.kwargs.get('pk'),))

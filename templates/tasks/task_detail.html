@@ -61,10 +61,13 @@
                                                     <h6>{{ application.tasker.email }}</h6>
                                                     <h6>{{ application.tasker.contact }}</h6>
 
-                                                    <div class="buttons mt-3">
-                                                        <a href="{% url 'users:profile' application.tasker.id %}" class="btn btn-lg btn-primary data-dismiss="modal">Profile</a>
-                                                        <button class="btn btn-lg btn-danger" data-dismiss="modal">Accept</button>
-                                                    </div>
+                                                    <form class="mt-3" method="POST" action="{% url 'tasks:accept-tasker' task.id %}">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="tasker" id="id_tasker" value="{{ application.tasker.id }}">
+
+                                                        <a href="{% url 'users:profile' application.tasker.id %}" class="btn btn-lg btn-primary">Profile</a>
+                                                        <button type="submit" class="btn btn-lg btn-danger">Accept</button>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>

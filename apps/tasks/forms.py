@@ -121,3 +121,17 @@ class TaskStatusUpdateForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = ('status',)
+
+
+class AcceptTaskerForm(forms.ModelForm):
+
+    class Meta:
+        model = Task
+        fields = ('tasker',)
+
+    def save(self, *args, **kwargs):
+        task = super().save(commit=False)
+        task.status = task.STATUS_ACCEPTED
+        task.save()
+
+        return task

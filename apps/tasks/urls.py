@@ -39,4 +39,9 @@ urlpatterns = [
         view=views.TaskStatusUpdateView.as_view(),
         name='status-update'
     ),
+    url(
+        regex=r'^(?P<pk>[-:\w]+)/tasker/accept/$',
+        view=views.AcceptTaskerView.as_view(),
+        name='accept-tasker'
+    ),
 ]
