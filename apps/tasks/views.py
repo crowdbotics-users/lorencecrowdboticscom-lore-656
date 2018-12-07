@@ -11,10 +11,13 @@ from django.views.generic import (
     UpdateView,
 )
 
-from .models import Task
+from .models import (
+    Application,
+    Task,
+)
 from .forms import (
+    ApplicationForm,
     TaskForm,
-    TaskApplyForm,
     TaskStatusUpdateForm,
 )
 from apps.users.forms import RatingForm
@@ -45,10 +48,6 @@ class TaskListView(LoginRequiredMixin, ListView):
 class TaskDetailView(LoginRequiredMixin, DetailView):
     model = Task
     template_name = 'tasks/task_detail.html'
-    pk_url_kwarg = 'pk'
-
-    def get_object(self):
-        return Task.objects.get(pk=self.kwargs.get('pk'))
 
 
 class AvailableTaskListView(LoginRequiredMixin, ListView):
@@ -60,30 +59,10 @@ class AvailableTaskListView(LoginRequiredMixin, ListView):
         user = self.request.user
 
         if user.type == user.TYPE_TASKER:
-            return Task.objects.filter(tasker=None)
-
-        return HttpResponseNotFound('<h1>Page not found</h1>')
-
-
-class TaskDetailView(LoginRequiredMixin, DetailView):
-    model = Task
-    template_name = 'tasks/task_detail.html'
-    pk_url_kwarg = 'pk'
-
-    def get_object(self):
-        return Task.objects.get(pk=self.kwargs.get('pk'))
-
-
-class AvailableTaskListView(LoginRequiredMixin, ListView):
-    model = Task
-    context_object_name = 'tasks'
-    template_name = 'tasks/available_task_list.html'
-
-    def get_queryset(self):
-        user = self.request.user
-
-        if user.type == user.TYPE_TASKER:
-            return Task.objects.filter(tasker=None)
+            applied_tasks = [application.task.id for application in user.applications.all()]
+            return Task.objects\
+                .filter(status=Task.STATUS_PENDING)\
+                .exclude(id__in=applied_tasks)
 
         return HttpResponseNotFound('<h1>Page not found</h1>')
 
@@ -98,21 +77,14 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
         return {'customer': self.request.user}
 
 
-class TaskApplyView(LoginRequiredMixin, View):
+class TaskApplyView(LoginRequiredMixin, CreateView):
+    model = Application
+    form_class = ApplicationForm
+    template_name = 'tasks/task_apply.html'
+    success_url = reverse_lazy('tasks:available-task-list')
 
-    def post(self, request, *args, **kwargs):
-        data = request.POST
-        form = TaskApplyForm(data)
-        task = data.get('task')
-
-        if form.is_valid():
-            return HttpResponseRedirect(reverse_lazy('tasks:task-list'))
-        else:
-            form = TaskApplyForm()
-
-        return HttpResponseRedirect(
-            reverse('tasks:task-detail', {'pk': task.id})
-        )
+    def get_initial(self):
+        return {'user': self.request.user}
 
 
 class TaskRatingView(LoginRequiredMixin, CreateView):
@@ -141,6 +113,3 @@ class TaskStatusUpdateView(LoginRequiredMixin, UpdateView):
 
     def get(self, request, *args, **kwargs):
         return HttpResponseRedirect(reverse_lazy('tasks:task-list'))
-
-    def get_object(self):
-        return Task.objects.get(pk=self.kwargs.get('pk'))

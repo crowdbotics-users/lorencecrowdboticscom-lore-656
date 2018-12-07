@@ -13,10 +13,12 @@
                         <h6 class="card-subtitle text-muted mb-2">${{ task.cost }}</h6>
                         <h6>{{ task.address }}</h6>
                         <p class="card-text">{{ task.notes }}</p>
-                        <div class="buttons row col-md-12">
-                            <a href="{% url 'tasks:task-detail' task.id %}" class="btn btn-primary mr-2">Apply</a>
+                        <form class="row col-md-12" method="POST" action="{% url 'tasks:apply' task.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="task" id="id_task" value="{{ task.id }}">
+                            <button type="submit" href="{% url 'tasks:task-detail' task.id %}" class="btn btn-primary mr-2">Apply</button>
                             <a href="{% url 'tasks:task-detail' task.id %}" class="btn btn-outline-primary">Details</a>
-                        </div>
+                        </form>
                     </div>
                     <div class="col-md-7">
                         <div class="card">
@@ -38,6 +40,10 @@
                     <a href="{% url 'users:profile' task.customer.pk %}" class="text-white"><strong>{{ task.customer.get_full_name }}</strong></a>
                 </small>
             </div>
+        </div>
+    {% empty %}
+        <div class="text-center">
+            <h1>No available tasks yet.</h1>
         </div>
     {% endfor %}
 </div>

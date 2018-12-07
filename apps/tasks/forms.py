@@ -98,11 +98,22 @@ class TodoForm(forms.ModelForm):
 TodoFormSet = formset_factory(TodoForm, extra=1)
 
 
-class TaskApplyForm(forms.ModelForm):
+class ApplicationForm(forms.ModelForm):
 
     class Meta:
         model = Application
-        fields = '__all__'
+        fields = ('task',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.initial = kwargs.get('initial')
+
+    def save(self, *args, **kwargs):
+        application = super().save(commit=False)
+        application.tasker = self.initial.get('user')
+        application.save()
+
+        return application
 
 
 class TaskStatusUpdateForm(forms.ModelForm):

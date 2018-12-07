@@ -102,6 +102,10 @@
                 </small>
             </div>
         </div>
+    {% empty %}
+        <div class="text-center">
+            <h1>You have no tasks yet.</h1>
+        </div>
     {% endfor %}
 </div>
 {% endblock content %}
