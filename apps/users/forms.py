@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from allauth.account.forms import SignupForm
 
+from .models import Rating
 
 User = get_user_model()
 
@@ -21,3 +22,10 @@ class SignupForm(SignupForm):
         user.type = self.cleaned_data.get('type')
         user.save()
         return user
+
+
+class RatingForm(forms.ModelForm):
+
+    class Meta:
+        model = Rating
+        fields = '__all__'

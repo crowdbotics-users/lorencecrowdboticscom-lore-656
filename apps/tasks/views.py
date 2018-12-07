@@ -1,7 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.urlresolvers import reverse_lazy
-from django.http import HttpResponseNotFound
+from django.core.urlresolvers import reverse_lazy, reverse
+from django.http import HttpResponseNotFound, HttpResponseRedirect
+from django.views import View
 from django.views.generic.base import TemplateView
+from django.views.generic.edit import FormView
 from django.views.generic import (
     CreateView,
     ListView,
@@ -9,7 +11,8 @@ from django.views.generic import (
 )
 
 from .models import Task
-from .forms import TaskForm
+from .forms import TaskForm, TaskApplyForm
+from ..users.forms import RatingForm
 
 
 class TaskListView(LoginRequiredMixin, ListView):
@@ -81,3 +84,25 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
 
     def get_initial(self):
         return {'customer': self.request.user}
+
+
+class TaskApplyView(LoginRequiredMixin, View):
+
+    def post(self, request, *args, **kwargs):
+        data = request.POST
+        form = TaskApplyForm(data)
+        task = data.get('task')
+
+        if form.is_valid():
+            return HttpResponseRedirect(reverse_lazy('tasks:task-list'))
+        else:
+            form = TaskApplyForm()
+
+        return HttpResponseRedirect(
+            reverse('tasks:task-detail', {'pk': task.id})
+        )
+
+
+class TaskRatingView(LoginRequiredMixin, FormView):
+    template_name = 'tasks/rating.html'
+    form_class = RatingForm

@@ -6,6 +6,7 @@ from django.forms import formset_factory
 from django.utils.translation import ugettext_lazy as _
 
 from .models import (
+    Application,
     Task,
     Todo,
     TodoImage,
@@ -30,8 +31,10 @@ class CustomerTodoCreationForm(forms.ModelForm):
 
 
 class TaskForm(forms.ModelForm):
-    date = forms.DateField(label=_('Date'), widget=forms.DateInput(attrs={'type':'date'}))
-    time = forms.TimeField(label=_('Time'), widget=forms.TimeInput(attrs={'type':'time'}))
+    date = forms.DateField(
+        label=_('Date'), widget=forms.DateInput(attrs={'type': 'date'}))
+    time = forms.TimeField(
+        label=_('Time'), widget=forms.TimeInput(attrs={'type': 'time'}))
 
     class Meta:
         model = Task
@@ -48,8 +51,10 @@ class TaskForm(forms.ModelForm):
 
         if not self.todo_formset.is_valid():
             if self.todo_formset.non_form_errors():
-                raise forms.ValidationError(self.todo_formset.non_form_errors()[0])
-            raise forms.ValidationError(_('Please check your todo task list errors below.'))
+                raise forms.ValidationError(
+                    self.todo_formset.non_form_errors()[0])
+            raise forms.ValidationError(
+                _('Please check your todo task list errors below.'))
 
         return self.cleaned_data
 
@@ -73,6 +78,7 @@ class TaskForm(forms.ModelForm):
                 form.save()
 
         return task
+
 
 class TodoForm(forms.ModelForm):
     images = forms.ImageField(
@@ -104,3 +110,10 @@ class TodoForm(forms.ModelForm):
 
 
 TodoFormSet = formset_factory(TodoForm, extra=1)
+
+
+class TaskApplyForm(forms.ModelForm):
+
+    class Meta:
+        model = Application
+        fields = '__all__'

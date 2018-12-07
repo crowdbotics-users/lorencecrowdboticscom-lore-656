@@ -155,7 +155,7 @@ STATICFILES_DIRS = [
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 LOCAL_APPS = [
     'home',
-    'users',
+    'apps.users',
     'apps.tasks',
 ]
 THIRD_PARTY_APPS = [
