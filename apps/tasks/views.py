@@ -6,14 +6,19 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 from django.views.generic import (
     CreateView,
-    ListView,
     DetailView,
+    ListView,
+    UpdateView,
 )
 
 from .models import Task
-from .forms import TaskForm, TaskApplyForm
-from ..users.forms import RatingForm
-from ..users.models import Rating
+from .forms import (
+    TaskForm,
+    TaskApplyForm,
+    TaskStatusUpdateForm,
+)
+from apps.users.forms import RatingForm
+from apps.users.models import Rating
 
 
 class TaskListView(LoginRequiredMixin, ListView):
@@ -43,7 +48,7 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
     pk_url_kwarg = 'pk'
 
     def get_object(self):
-        return Task.objects.get(pk=self.kwargs['pk'])
+        return Task.objects.get(pk=self.kwargs.get('pk'))
 
 
 class AvailableTaskListView(LoginRequiredMixin, ListView):
@@ -66,7 +71,7 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
     pk_url_kwarg = 'pk'
 
     def get_object(self):
-        return Task.objects.get(pk=self.kwargs['pk'])
+        return Task.objects.get(pk=self.kwargs.get('pk'))
 
 
 class AvailableTaskListView(LoginRequiredMixin, ListView):
@@ -116,6 +121,9 @@ class TaskRatingView(LoginRequiredMixin, CreateView):
     template_name = 'tasks/rating.html'
     success_url = reverse_lazy('tasks:task-list')
 
+    def get(self, request, *args, **kwargs):
+        return HttpResponseRedirect(reverse_lazy('tasks:task-list'))
+
     def get_initial(self):
         task = Task.objects.get(id=self.kwargs.get('pk'))
 
@@ -123,3 +131,16 @@ class TaskRatingView(LoginRequiredMixin, CreateView):
             'user': self.request.user,
             'task': task,
         }
+
+
+class TaskStatusUpdateView(LoginRequiredMixin, UpdateView):
+    model = Task
+    context_object_name = 'task'
+    form_class = TaskStatusUpdateForm
+    success_url = reverse_lazy('tasks:task-list')
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseRedirect(reverse_lazy('tasks:task-list'))
+
+    def get_object(self):
+        return Task.objects.get(pk=self.kwargs.get('pk'))

@@ -34,4 +34,9 @@ urlpatterns = [
         view=views.TaskRatingView.as_view(),
         name='rate'
     ),
+    url(
+        regex=r'^(?P<pk>[-:\w]+)/status/update/$',
+        view=views.TaskStatusUpdateView.as_view(),
+        name='status-update'
+    ),
 ]

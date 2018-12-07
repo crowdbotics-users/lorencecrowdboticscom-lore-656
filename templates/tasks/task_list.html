@@ -30,16 +30,28 @@
                         <h6 class="card-subtitle text-muted mb-2">${{ task.cost }}</h6>
                         <h6>{{ task.address }}</h6>
                         <p class="card-text">{{ task.notes }}</p>
-                        <div class="buttons row col-md-12">
-                            {% if user.type == user.TYPE_TASKER and task.status != task.STATUS_DONE %}
-                                <a href="{% url 'tasks:task-detail' task.id %}" class="btn btn-primary mr-2">Status Update</a>
-                            {% else %}
-                                {% if not user|has_rated:task %}
-                                    <button class="btn btn-warning mr-2" data-toggle="modal" data-target="#rate-{{ task.id }}">Rate</button>
+                        <form class="row col-md-12" method="POST" action="{% url 'tasks:status-update' task.id %}">
+                            {% csrf_token %}
+                            {% if user.type == user.TYPE_TASKER %}
+                                {% if task.status == task.STATUS_ACCEPTED or task.status == task.STATUS_IN_PROGRESS  %}
+                                    <input type="hidden" value="{{ task.status|add:'1' }}" name="status">
+                                        {% if task.status == task.STATUS_ACCEPTED %}
+                                            <button type="submit" href="{% url 'tasks:task-detail' task.id %}" class="btn btn-primary mr-2">
+                                                Start Task
+                                            </button>
+                                        {% elif task.status == task.STATUS_IN_PROGRESS %}
+                                            <button type="submit" href="{% url 'tasks:task-detail' task.id %}" class="btn btn-success mr-2">
+                                                Finish Task
+                                            </button>
+                                        {% endif %}
+                                {% endif %}
+
+                                {% if task.status == task.STATUS_DONE and not user|has_rated:task %}
+                                    <a class="btn btn-warning mr-2" data-toggle="modal" data-target="#rate-{{ task.id }}">Rate</a>
                                 {% endif %}
                             {% endif %}
-                            <a href="{% url 'tasks:task-detail' task.id %}" class="btn btn-outline-primary">Details</a>
-                        </div>
+                            <a href="{% url 'tasks:task-detail' task.id %}" class="btn btn-outline-dark">Details</a>
+                        </form>
 
                         <!-- Modal -->
                         <div class="modal fade" id="rate-{{ task.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

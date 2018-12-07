@@ -33,6 +33,10 @@
             </div>
             <div class="card-footer bg-dark">
                 <small class="text-white">Requested for <strong>{{ task.start_date.date }} @ {{ task.start_date.time }}</strong></small>
+                <small class="text-white float-right">
+                    Requested by
+                    <a href="{% url 'users:profile' task.customer.pk %}" class="text-white"><strong>{{ task.customer.get_full_name }}</strong></a>
+                </small>
             </div>
         </div>
     {% endfor %}

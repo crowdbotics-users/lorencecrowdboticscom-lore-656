@@ -103,3 +103,10 @@ class TaskApplyForm(forms.ModelForm):
     class Meta:
         model = Application
         fields = '__all__'
+
+
+class TaskStatusUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = Task
+        fields = ('status',)
