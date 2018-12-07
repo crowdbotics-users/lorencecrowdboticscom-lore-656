@@ -3,8 +3,8 @@ from django.db import models
 from django.db.models import Avg
 from django.utils.translation import ugettext_lazy as _
 
-from core.models import TimeStampedModel, OPTIONAL
-from core.utils import get_images_upload_path
+from apps.core.models import TimeStampedModel, OPTIONAL
+from apps.core.utils import get_images_upload_path
 
 
 class User(AbstractUser):

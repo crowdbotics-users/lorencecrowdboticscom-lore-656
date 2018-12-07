@@ -3,8 +3,8 @@ import uuid
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from core.models import OPTIONAL, TimeStampedModel
-from core.utils import get_images_upload_path
+from apps.core.models import OPTIONAL, TimeStampedModel
+from apps.core.utils import get_images_upload_path
 
 
 class Category(models.Model):
