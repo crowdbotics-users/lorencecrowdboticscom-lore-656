@@ -30,7 +30,7 @@ class RatingForm(forms.ModelForm):
         model = Rating
         fields = ('rate', 'remarks',)
         widgets = {
-            'rate': forms.NumberInput(attrs={'class': 'rating'}),
+            'rate': forms.NumberInput(attrs={'class': 'rating d-none'}),
         }
 
     def __init__(self, *args, **kwargs):

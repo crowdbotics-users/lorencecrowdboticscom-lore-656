@@ -21,12 +21,10 @@ class simpleRating{
 
   init(){
     var html='<div class="simple-rating star-rating">';
-    for(var i=0;i<5;i++){html+='<i class="far fa-star star" data-rating="'+(i+1)+'"></i>';}
+    for(var i=0;i<5;i++){html+='<i class="far fa-star" data-rating="'+(i+1)+'"></i>';}
     html+='</div>';
 
-    $(this.obj)
-      .attr('type','hidden')
-      .after(html);
+    $(this.obj).after(html);
 
     $(this.obj).next().children().click({classObj:this},function(e){
       e.data.classObj.rate(this);
