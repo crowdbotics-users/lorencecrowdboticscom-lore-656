@@ -1,18 +1,40 @@
 {% extends 'base.html' %}
 
+{% load humanize %}
+
 {% block content %}
-    <div class="card-columns">
-        {% for task in tasks %}
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">{{ task.category }}</h5>
-                    <p class="card-text">{{ task.notes }}</p>
-                    <a href="{% url 'tasks:task-detail' task.id %}" class="card-link">Apply Now</a>
-                </div>
-                <div class="card-footer">
-                    <small class="text-muted">{{ task.start_date }}</small>
+<div class="col-md-12 mt-5">
+    {% for task in tasks %}
+        <div class="card border-dark mb-5">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-5">
+                        <h4 class="card-title">{{ task.category }}</h4>
+                        <h6 class="card-subtitle text-muted mb-2">${{ task.cost }}</h6>
+                        <h6>{{ task.address }}</h6>
+                        <p class="card-text">{{ task.notes }}</p>
+                        <div class="buttons row col-md-12">
+                            <a href="{% url 'tasks:task-detail' task.id %}" class="btn btn-primary mr-2">Apply</a>
+                            <a href="{% url 'tasks:task-detail' task.id %}" class="btn btn-outline-primary">Details</a>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card">
+                            <ul class="list-group list-group-flush">
+                                {% for item in task.todos.all %}
+                                    <li class="list-group-item">
+                                        <ul><li>{{ item.description }}</li></ul>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
-        {% endfor %}
-    </div>
+            <div class="card-footer bg-dark">
+                <small class="text-white">Requested for <strong>{{ task.start_date.date }} @ {{ task.start_date.time }}</strong></small>
+            </div>
+        </div>
+    {% endfor %}
+</div>
 {% endblock content %}

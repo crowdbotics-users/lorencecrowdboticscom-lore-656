@@ -25,5 +25,5 @@ class DashboardView(LoginRequiredMixin, RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         user = self.request.user
         if user.type == user.TYPE_TASKER:
-            return reverse_lazy('tasks:task-list')
+            return reverse_lazy('tasks:available-task-list')
         return reverse_lazy('tasks:task-create')
