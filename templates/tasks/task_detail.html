@@ -1,23 +1,137 @@
 {% extends 'base.html' %}
+
+{% load staticfiles %}
+
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-sm">
-                {{ task.category }}
-                {{ task.customer }}
-                {{ task.cost }}
-                {{ task.address }}
-                {{ task.start_date }}
-                {{ task.notes }}
+<div class="mt-5">
+    <div class="row">
+        <div class="col-md-5 text-center">
+            <div class="card">
+                <h5 class="card-header text-white
+                    {% if task.status == task.STATUS_PENDING %}
+                        bg-secondary
+                    {% elif task.status == task.STATUS_ACCEPTED %}
+                        bg-warning
+                    {% elif task.status == task.STATUS_IN_PROGRESS %}
+                        bg-primary
+                    {% elif task.status == task.STATUS_DONE %}
+                        bg-success
+                    {% endif %}"
+                >
+                    {{ task.get_status_display|upper }}
+                </h5>
+                <div class="card-body">
+                    <h4 class="card-title">{{ task.category }}</h4>
+                    <h6 class="card-subtitle text-muted mb-2">${{ task.cost }}</h6>
+                    <h6>{{ task.address }}</h6>
+                    <p class="card-text">{{ task.notes }}</p>
+                </div>
             </div>
-            <div class="col-sm">
-                <h1> TO DO LIST: </h1>
+
+            <div class="card mt-5">
+                {% if task.status == task.STATUS_PENDING %}
+                    <h4 class="card-header bg-dark text-white">Applicants</h4>
+                    <div class="container">
+                        <div class="applicants row mt-3">
+                            {% for application in task.applications.all %}
+                                <div class="col-md-4 text-center mb-3">
+                                    <a href="#" data-toggle="modal" data-target="#modal-applicant-{{ application.tasker.id }}" class="link-unstyled">
+                                        <img class="rounded-circle thumbnail mb-1" src="{% if application.tasker.image %}{{ application.tasker.image.url }}{% else %}{% static 'img/user.png' %}{% endif %}" alt="Profile Picture">
+                                        <h5>{{ application.tasker.get_full_name }}</h5>
+                                    </a>
+                                </div>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="modal-applicant-{{ application.tasker.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="card">
+                                                <img class="card-img-top" src="{% if application.tasker.image %}{{ application.tasker.image.url }}{% else %}{% static 'img/user.png' %}{% endif %}" alt="Profile Picture">
+                                                <div class="card-body">
+                                                    <div class="star-rating mt-1 mb-1">
+                                                        {% for i in "12345"|center:"5" %}
+                                                            {% if i|add:"0" <= application.tasker.average_rating %}
+                                                                <i class="fas fa-star star"></i>
+                                                            {% else %}
+                                                                <i class="far fa-star star"></i>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </div>
+                                                    <h2 class="card-title">{{ application.tasker.get_full_name }}</h2>
+                                                    <h6>{{ application.tasker.email }}</h6>
+                                                    <h6>{{ application.tasker.contact }}</h6>
+
+                                                    <div class="buttons mt-3">
+                                                        <a href="{% url 'users:profile' application.tasker.id %}" class="btn btn-lg btn-primary data-dismiss="modal">Profile</a>
+                                                        <button class="btn btn-lg btn-danger" data-dismiss="modal">Accept</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <h3 class="card-header bg-dark text-white">Tasker</h3>
+                    <div class="text-center mb-3 mt-3">
+                        <a href="#" data-toggle="modal" data-target="#modal-tasker" class="link-unstyled">
+                            <img class="rounded-circle thumbnail mb-1" src="{% if task.tasker.image %}{{ task.tasker.image.url }}{% else %}{% static 'img/user.png' %}{% endif %}" alt="Profile Picture">
+                            <h5>{{ task.tasker.get_full_name }}</h5>
+                        </a>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="modal-tasker" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="card">
+                                            <img class="card-img-top" src="{% if task.tasker.image %}{{ task.tasker.image.url }}{% else %}{% static 'img/user.png' %}{% endif %}" alt="Profile Picture">
+                                            <div class="card-body">
+                                                <div class="star-rating mt-1 mb-1">
+                                                    {% for i in "12345"|center:"5" %}
+                                                        {% if i|add:"0" <= task.tasker.average_rating %}
+                                                            <i class="fas fa-star star"></i>
+                                                        {% else %}
+                                                            <i class="far fa-star star"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <h2 class="card-title">{{ task.tasker.get_full_name }}</h2>
+                                                <h6>{{ task.tasker.email }}</h6>
+                                                <h6>{{ task.tasker.contact }}</h6>
+
+                                                <div class="buttons mt-3">
+                                                    <a href="{% url 'users:profile' task.tasker.id %}" class="btn btn-lg btn-primary data-dismiss="modal">Profile</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
                 <ul class="list-group list-group-flush">
-                {% for todo in task.todos.all %}
-                    <li class="list-group-item"><i class="fas fa-check-square"></i>&nbsp;{{ todo.description }}</li>
-                {% endfor %}
+                    {% for item in task.todos.all %}
+                        <li class="list-group-item">
+                            <i class="fas fa-check"></i> {{ item.description }}
+                            <div class="row">
+                                {% for image in item.images.all %}
+                                    <div class="m-3">
+                                        <img src="{{ image.image.url }}" alt="todo Image" class="todo-image">
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
     </div>
+</div>
 {% endblock content %}

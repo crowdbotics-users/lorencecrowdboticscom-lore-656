@@ -6,15 +6,15 @@
 <div class="col-md-12 mt-5">
     {% for task in tasks %}
         <div class="card border-dark mb-5">
-            <h6 class="card-header
+            <h6 class="card-header text-white
                 {% if task.status == task.STATUS_PENDING %}
-                    bg-light
+                    bg-secondary
                 {% elif task.status == task.STATUS_ACCEPTED %}
-                    bg-warning text-white
+                    bg-warning
                 {% elif task.status == task.STATUS_IN_PROGRESS %}
-                    bg-primary text-white
+                    bg-primary
                 {% elif task.status == task.STATUS_DONE %}
-                    bg-success text-white
+                    bg-success
                 {% endif %}"
             >
                 {{ task.get_status_display|upper }}
@@ -38,7 +38,7 @@
                             <ul class="list-group list-group-flush">
                                 {% for item in task.todos.all %}
                                     <li class="list-group-item">
-                                        <ul><li>{{ item.description }}</li></ul>
+                                        <i class="fas fa-check"></i> {{ item.description }}
                                     </li>
                                 {% endfor %}
                             </ul>
