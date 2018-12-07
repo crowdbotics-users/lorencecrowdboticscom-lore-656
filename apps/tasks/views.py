@@ -13,6 +13,7 @@ from django.views.generic import (
 from .models import Task
 from .forms import TaskForm, TaskApplyForm
 from ..users.forms import RatingForm
+from ..users.models import Rating
 
 
 class TaskListView(LoginRequiredMixin, ListView):
@@ -28,6 +29,12 @@ class TaskListView(LoginRequiredMixin, ListView):
             queryset = user.customer_tasks.all()
 
         return queryset.order_by('status')
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['rating_form'] = RatingForm(initial={'user': self.request.user})
+        return context
 
 
 class TaskDetailView(LoginRequiredMixin, DetailView):
@@ -103,6 +110,16 @@ class TaskApplyView(LoginRequiredMixin, View):
         )
 
 
-class TaskRatingView(LoginRequiredMixin, FormView):
-    template_name = 'tasks/rating.html'
+class TaskRatingView(LoginRequiredMixin, CreateView):
+    model = Rating
     form_class = RatingForm
+    template_name = 'tasks/rating.html'
+    success_url = reverse_lazy('tasks:task-list')
+
+    def get_initial(self):
+        task = Task.objects.get(id=self.kwargs.get('pk'))
+
+        return {
+            'user': self.request.user,
+            'task': task,
+        }

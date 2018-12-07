@@ -28,4 +28,30 @@ class RatingForm(forms.ModelForm):
 
     class Meta:
         model = Rating
-        fields = '__all__'
+        fields = ('rate', 'remarks',)
+        widgets = {
+            'rate': forms.NumberInput(attrs={'class': 'rating'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.initial = kwargs.get('initial')
+
+    def save(self, *args, **kwargs):
+        rating = super().save(commit=False)
+        task = self.initial.get('task')
+        user = self.initial.get('user')
+
+        if user.type == user.TYPE_TASKER:
+            receiver = task.customer
+            sender = task.tasker
+        else:
+            receiver = task.tasker
+            sender = task.customer
+
+        rating.task = self.initial.get('task')
+        rating.receiver = receiver
+        rating.sender = sender
+        rating.save()
+
+        return rating

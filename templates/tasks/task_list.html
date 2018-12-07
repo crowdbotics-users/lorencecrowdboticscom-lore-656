@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% load humanize staticfiles task_tags %}
+{% load humanize staticfiles task_tags bootstrap4 %}
 
 {% block header_css %}
 <link rel="stylesheet" href="{% static 'css/rating.css' %}">
@@ -46,18 +46,15 @@
                             <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">
                                     <div class="modal-body">
-                                        <form>
-                                            <div class="form-group">
-                                                <input class="rating">
+                                        <form method="POST" action="{% url 'tasks:rate' task.id %}">
+                                            {% csrf_token %}
+                                            {% bootstrap_form_errors rating_form %}
 
-                                                <div class="form-group">
-                                                    <label for="message-text" class="col-form-label">Remarks:</label>
-                                                    <textarea class="form-control" id="message-text"></textarea>
-                                                </div>
-                                            </div>
+                                            {% bootstrap_field rating_form.rate show_label=False %}
+                                            {% bootstrap_field rating_form.remarks %}
 
                                             <div class="text-center mt-4">
-                                                <button type="button" class="btn btn-lg btn-primary text-white" data-dismiss="modal">Rate</button>
+                                                <button type="submit" class="btn btn-lg btn-primary text-white">Rate</button>
                                             </div>
                                         </form>
                                     </div>

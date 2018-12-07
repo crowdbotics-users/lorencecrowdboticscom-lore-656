@@ -16,20 +16,6 @@ from .models import (
 User = get_user_model()
 
 
-class CustomerTaskCreationForm(forms.ModelForm):
-
-    class Meta:
-        model = Task
-        exclude = ('customer', 'tasker', 'status',)
-
-
-class CustomerTodoCreationForm(forms.ModelForm):
-
-    class Meta:
-        model = Todo
-        exclude = ('task',)
-
-
 class TaskForm(forms.ModelForm):
     date = forms.DateField(
         label=_('Date'), widget=forms.DateInput(attrs={'type': 'date'}))
